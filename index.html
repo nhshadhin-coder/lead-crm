@@ -148,7 +148,6 @@
     }
     .btn-logout:hover { background: #dc2626; color: #ffffff; border-color: #dc2626; }
 
-    /* Email + Password Login Card */
     .login-box {
       display: none;
       background: #f8fafc;
@@ -609,7 +608,6 @@
   </div>
 
   <script>
-    // এখানে আপনার Google Apps Script Web App URL-টি বসান
     const API_URL = "https://script.google.com/macros/s/AKfycbxc-tiJGUUJ5vTOGx-RbID7E9kFG6tcoTj2Tl31uEC5lNWmUpwhIVNfUDW7F6CEUSDk/exec";
 
     const STORAGE_KEYS = {
@@ -641,10 +639,6 @@
     }
 
     async function callApi_(bodyObj) {
-      if (!API_URL || API_URL === "https://script.google.com/macros/s/AKfycbxc-tiJGUUJ5vTOGx-RbID7E9kFG6tcoTj2Tl31uEC5lNWmUpwhIVNfUDW7F6CEUSDk/exec") {
-        throw new Error("অনুগ্রহ করে index.html কোডে আপনার Apps Script Web App URL সেট করুন।");
-      }
-
       const url = new URL(API_URL);
       url.searchParams.set("action", bodyObj.action || "");
       if (bodyObj.email) url.searchParams.set("email", bodyObj.email);
