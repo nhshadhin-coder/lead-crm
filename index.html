@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lead Management System</title>
+  <style>
+    * { box-sizing: border-box; font-family: "Segoe UI", Roboto, Arial, sans-serif; }
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 26px 30px;
+      width: 100%;
+      max-width: 1260px;
+      margin: 0 auto;
+      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.07);
+      border: 1px solid #e2e8f0;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .badge {
+      font-size: 12px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .net-badge {
+      font-size: 12px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+    .net-online { background: #dcfce7; color: #166534; }
+    .net-offline { background: #fee2e2; color: #991b1b; }
+    .role-badge {
+      font-size: 12px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-weight: 600;
+      display: none;
+    }
+    .role-admin { background: #fef3c7; color: #92400e; }
+    .role-agent { background: #ecfdf5; color: #065f46; }
+    .lead-pill {
+      font-size: 12.5px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-weight: 600;
+      display: none;
+    }
+    .sync-bar {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #fffbeb;
+      border: 1px solid #f59e0b;
+      color: #92400e;
+      padding: 11px 16px;
+      border-radius: 9px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .btn-sync {
+      background: #d97706;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 13px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-sync:hover { background: #b45309; }
+    .profile-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 16px 20px;
+      border-radius: 11px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.16);
+    }
+    .profile-left { display: flex; align-items: center; gap: 14px; }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+    .profile-info h3 { margin: 0 0 3px 0; font-size: 16px; font-weight: 700; color: #ffffff; }
+    .profile-email { font-size: 12.5px; color: #cbd5e1; }
+    .profile-right { display: flex; align-items: center; gap: 12px; }
+    .agent-id-box {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      padding: 7px 14px;
+      border-radius: 8px;
+      text-align: right;
+    }
+    .agent-id-label {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #93c5fd;
+      font-weight: 600;
+    }
+    .agent-id-value { font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 0.4px; }
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.22);
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      padding: 9px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-logout:hover { background: #dc2626; color: #ffffff; border-color: #dc2626; }
+    .verify-box {
+      display: none;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+    }
+    .verify-box h4 { margin: 0 0 6px 0; color: #92400e; font-size: 15px; }
+    .verify-box p { margin: 0 0 12px 0; color: #78350f; font-size: 13px; }
+    .search-wrapper {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+    .search-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .search-box { display: flex; gap: 10px; max-width: 560px; }
+    .search-box input {
+      flex: 1;
+      padding: 10px 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      font-size: 14px;
+      color: #0f172a;
+      background: #ffffff;
+    }
+    .panel-box {
+      display: none;
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      border-radius: 11px;
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.05);
+    }
+    .panel-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .panel-title-wrap { display: flex; align-items: center; gap: 10px; }
+    .panel-title { margin: 0; font-size: 15px; font-weight: 700; color: #0f172a; }
+    .count-pill {
+      background: #dbeafe;
+      color: #1e40af;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .sync-hint { font-size: 11.5px; color: #64748b; }
+    .panel-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .panel-filter {
+      padding: 7px 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      font-size: 13px;
+      min-width: 250px;
+      color: #0f172a;
+    }
+    .btn-sm {
+      padding: 7px 12px;
+      font-size: 12.5px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-light { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .btn-light:hover { background: #e2e8f0; }
+    .btn-select {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-select:hover { background: #2563eb; color: #ffffff; border-color: #2563eb; }
+    .table-wrap { max-height: 290px; overflow: auto; border: 1px solid #e2e8f0; border-radius: 8px; }
+    table.leads-table { width: 100%; min-width: 1150px; border-collapse: collapse; font-size: 12.5px; }
+    table.leads-table thead th {
+      position: sticky;
+      top: 0;
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 700;
+      text-align: left;
+      padding: 9px 10px;
+      border-bottom: 1px solid #cbd5e1;
+      white-space: nowrap;
+      z-index: 1;
+    }
+    table.leads-table tbody td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #1e293b;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    table.leads-table tbody tr { cursor: pointer; }
+    table.leads-table tbody tr:hover { background: #eff6ff; }
+    table.leads-table tbody tr.active-row { background: #dbeafe; }
+    .status-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #f1f5f9;
+      color: #334155;
+    }
+    .pending-tag {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 700;
+      background: #fef3c7;
+      color: #92400e;
+      margin-left: 5px;
+    }
+    .empty-panel { padding: 18px; text-align: center; color: #64748b; font-size: 13px; }
+    .btn {
+      border: none;
+      border-radius: 7px;
+      padding: 10px 20px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-primary { background: #2563eb; color: #ffffff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-success { background: #059669; color: #ffffff; padding: 12px 24px; font-size: 14.5px; }
+    .btn-success:hover { background: #047857; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #64748b;
+      margin: 20px 0 12px;
+      padding-bottom: 5px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .grid-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px 16px; }
+    .grid-update { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 16px; }
+    .grid-call { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px 16px; }
+    @media (max-width: 900px) {
+      .grid-summary, .grid-call { grid-template-columns: repeat(2, 1fr); }
+      .grid-update { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .grid-summary, .grid-call { grid-template-columns: 1fr; }
+    }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 5px; color: #334155; }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      font-size: 13.5px;
+      color: #0f172a;
+      background: #ffffff;
+    }
+    input[readonly] {
+      background: #f1f5f9;
+      color: #475569;
+      border-color: #cbd5e1;
+      cursor: not-allowed;
+      user-select: none;
+      pointer-events: none;
+    }
+    textarea { resize: vertical; min-height: 90px; }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .action-bar { display: flex; justify-content: flex-end; margin-top: 10px; }
+    .alert {
+      padding: 11px 14px;
+      border-radius: 7px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .alert-error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .alert-success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    #formBody { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h2>Lead Details Form</h2>
+      <div class="header-right">
+        <span id="networkBadge" class="net-badge net-online">Online</span>
+        <span id="roleBadge" class="role-badge"></span>
+        <span id="activeLeadBadge" class="lead-pill"></span>
+        <span class="badge">GitHub + Sheets</span>
+      </div>
+    </div>
+
+    <div id="syncBar" class="sync-bar">
+      <span id="syncBarText">0 offline update(s) waiting to sync with Google Sheet.</span>
+      <button type="button" id="syncNowBtn" class="btn-sync" onclick="syncOfflineQueue()">Sync Now</button>
+    </div>
+
+    <div id="profileBanner" class="profile-banner">
+      <div class="profile-left">
+        <div id="userAvatar" class="avatar">...</div>
+        <div class="profile-info">
+          <h3 id="userName">Loading profile...</h3>
+          <div id="userEmail" class="profile-email">Checking session...</div>
+        </div>
+      </div>
+      <div class="profile-right">
+        <div class="agent-id-box">
+          <span class="agent-id-label">Agent ID</span>
+          <span id="userAgentId" class="agent-id-value">--</span>
+        </div>
+        <button type="button" id="logoutBtn" class="btn-logout" onclick="logoutAgent()" style="display:none;">Logout</button>
+      </div>
+    </div>
+
+    <div id="verifyBox" class="verify-box">
+      <h4>Agent Verification</h4>
+      <p>আপনার অনুমোদিত Gmail অ্যাড্রেস অথবা Agent ID (যেমন: NB01) দিয়ে প্রবেশ করুন:</p>
+      <div class="search-box">
+        <input type="text" id="verifyInput" placeholder="e.g. projectmanager985@gmail.com or NB01" onkeydown="if(event.key==='Enter') verifyAgent()">
+        <button type="button" id="verifyBtn" class="btn btn-primary" onclick="verifyAgent()">Verify</button>
+      </div>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <div id="searchSection" class="search-wrapper">
+      <span class="search-label">Find Assigned Lead Record (Works Online & Offline)</span>
+      <div class="search-box">
+        <input type="text" id="searchLeadId" placeholder="Lead ID (LD-0001) or Mobile Number" onkeydown="if(event.key==='Enter') searchLead()">
+        <button type="button" id="searchBtn" class="btn btn-primary" onclick="searchLead()">Search</button>
+      </div>
+    </div>
+
+    <div id="assignedPanel" class="panel-box">
+      <div class="panel-top">
+        <div class="panel-title-wrap">
+          <h4 id="assignedPanelTitle" class="panel-title">My Assigned Leads</h4>
+          <span id="assignedCountBadge" class="count-pill">0 Leads</span>
+          <span id="lastSyncText" class="sync-hint"></span>
+        </div>
+        <div class="panel-controls">
+          <input type="text" id="panelFilterInput" class="panel-filter" placeholder="Filter by Lead ID, Number, Name, Area..." oninput="renderAssignedTable()">
+          <button type="button" id="refreshPanelBtn" class="btn-sm btn-light" onclick="refreshAllFromSheet()">Refresh Sheet</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="leads-table">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Lead ID</th>
+              <th>Collection Date</th>
+              <th>Lead Source</th>
+              <th>Source Campaign</th>
+              <th>Customer Name</th>
+              <th>Mobile Number</th>
+              <th>Area</th>
+              <th>Interest</th>
+              <th>Assigned Date</th>
+              <th>Assigned Agent</th>
+              <th>Agent Name</th>
+              <th>Priority</th>
+              <th>Lead Status</th>
+              <th>Last Call Date</th>
+              <th>Next Follow-up</th>
+              <th>FollowUp Status</th>
+              <th>Attempts</th>
+              <th>Contact Permission</th>
+              <th>Revenue (BDT)</th>
+              <th>Customer Notes</th>
+            </tr>
+          </thead>
+          <tbody id="assignedLeadsBody">
+            <tr><td colspan="21" class="empty-panel">Loading assigned leads...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="formBody">
+      <input type="hidden" id="rowNumber">
+      <input type="hidden" id="leadId">
+
+      <div id="summarySectionTitle" class="section-title">Lead Summary (Sheet Info)</div>
+      <div class="grid-summary">
+        <div class="form-group"><label>Collection Date</label><input type="text" id="collectionDate" class="summary-field" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Mobile Number</label><input type="text" id="mobileNumber" class="summary-field" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Lead Source</label><input type="text" id="leadSource" class="summary-field" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Source Campaign</label><input type="text" id="sourceCampaign" class="summary-field" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Area</label><input type="text" id="area" class="summary-field" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Assigned Date</label><input type="text" id="assignedDate" class="summary-field" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Assigned Agent</label><input type="text" id="assignedAgent" class="summary-field" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Agent Name</label><input type="text" id="agentName" class="summary-field" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Last Call Date (Auto)</label><input type="text" id="lastCallDate" readonly tabindex="-1"></div>
+        <div class="form-group"><label>FollowUp Status (Auto)</label><input type="text" id="followUpStatus" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Total Call Attempts (Auto)</label><input type="text" id="totalCallAttempts" readonly tabindex="-1"></div>
+        <div class="form-group"><label>Total Revenue BDT (Auto)</label><input type="text" id="totalRevenue" readonly tabindex="-1"></div>
+      </div>
+
+      <div class="section-title">Update Lead Information</div>
+      <div class="grid-update">
+        <div class="form-group">
+          <label for="customerName">Customer Name</label>
+          <input type="text" id="customerName" placeholder="Enter customer name">
+        </div>
+        <div class="form-group">
+          <label for="interest">Product / Service Interest</label>
+          <input type="text" id="interest" placeholder="e.g. Package A / Service">
+        </div>
+        <div class="form-group">
+          <label for="nextFollowUp">Next Follow-up Date</label>
+          <input type="date" id="nextFollowUp">
+        </div>
+        <div class="form-group">
+          <label for="priority">Priority</label>
+          <select id="priority">
+            <option value="">-- Select Priority --</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="leadStatus">Lead Status</label>
+          <select id="leadStatus">
+            <option value="New">New</option>
+            <option value="Contacted">Contacted</option>
+            <option value="Interested">Interested</option>
+            <option value="Follow-up">Follow-up</option>
+            <option value="Converted">Converted</option>
+            <option value="Not Interested">Not Interested</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="contactPermission">Contact Permission</label>
+          <select id="contactPermission">
+            <option value="">-- Select --</option>
+            <option value="Allowed">Allowed</option>
+            <option value="DNC">DNC</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-title">Call History Log (Auto-saves Online or Offline)</div>
+      <div class="grid-call">
+        <div class="form-group">
+          <label for="callOutcome">Call Outcome *</label>
+          <select id="callOutcome">
+            <option value="">-- Select Call Outcome --</option>
+            <option value="Converted">Converted</option>
+            <option value="Connected - Interested">Connected - Interested</option>
+            <option value="Callback Requested">Callback Requested</option>
+            <option value="No Answer">No Answer</option>
+            <option value="Connected - Not Interested">Connected - Not Interested</option>
+            <option value="Busy / Switched Off">Busy / Switched Off</option>
+            <option value="Wrong Number">Wrong Number</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="orderId">Order ID (If Converted)</label>
+          <input type="text" id="orderId" placeholder="e.g. ORD-1025">
+        </div>
+        <div class="form-group">
+          <label for="saleAmount">Sale Amount (BDT)</label>
+          <input type="number" id="saleAmount" min="0" step="0.01" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label for="dncRequest">DNC Request</label>
+          <select id="dncRequest">
+            <option value="No" selected>No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="customerNotes">Call Notes / Customer Notes</label>
+        <textarea id="customerNotes" placeholder="Write call notes, requirements, or remarks..."></textarea>
+      </div>
+
+      <div class="action-bar">
+        <button type="button" id="saveBtn" class="btn btn-success" onclick="saveLead()">Save Changes & Log Call</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // এখানে আপনার Google Apps Script Web App URL-টি বসান
+    const API_URL = "https://script.google.com/macros/s/AKfycbxc-tiJGUUJ5vTOGx-RbID7E9kFG6tcoTj2Tl31uEC5lNWmUpwhIVNfUDW7F6CEUSDk/exec";
+
+    const STORAGE_KEYS = {
+      IDENTITY: "lead_gh_identity_v1",
+      PROFILE: "lead_gh_profile_v1",
+      LEADS: "lead_gh_cached_leads_v1",
+      QUEUE: "lead_gh_offline_queue_v1"
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const INITIAL_HINT = urlParams.get("email") || urlParams.get("id") || urlParams.get("agent") || "";
+
+    let ACTIVE_CLIENT_IDENTITY = INITIAL_HINT || localStorage.getItem(STORAGE_KEYS.IDENTITY) || "";
+    let LOGGED_IN_AGENT_ID = "";
+    let LOGGED_IN_AGENT_NAME = "";
+    let IS_LOGGED_IN_ADMIN = false;
+    let ASSIGNED_LEADS_CACHE = [];
+    let SELECTED_LEAD_ID = "";
+    let IS_SYNCING = false;
+
+    async function callApi_(bodyObj) {
+      if (!API_URL || API_URL === "YOUR_APPS_SCRIPT_WEB_APP_URL") {
+        throw new Error("অনুগ্রহ করে index.html কোডে আপনার Apps Script Web App URL সেট করুন।");
+      }
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(bodyObj)
+      });
+      const json = await res.json();
+      if (!json.ok) {
+        throw new Error(json.error || "API Error");
+      }
+      return json.data;
+    }
+
+    function getOfflineQueue_() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEYS.QUEUE) || "[]");
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function setOfflineQueue_(queue) {
+      localStorage.setItem(STORAGE_KEYS.QUEUE, JSON.stringify(queue || []));
+      updateSyncBarUI_();
+    }
+
+    function updateNetworkUI_() {
+      const badge = document.getElementById("networkBadge");
+      if (navigator.onLine) {
+        badge.textContent = "Online";
+        badge.className = "net-badge net-online";
+      } else {
+        badge.textContent = "Offline Mode";
+        badge.className = "net-badge net-offline";
+      }
+      updateSyncBarUI_();
+    }
+
+    function updateSyncBarUI_() {
+      const queue = getOfflineQueue_();
+      const bar = document.getElementById("syncBar");
+      const text = document.getElementById("syncBarText");
+      const btn = document.getElementById("syncNowBtn");
+
+      if (queue.length > 0) {
+        bar.style.display = "flex";
+        text.textContent = queue.length + " offline update(s) saved locally. " + (navigator.onLine ? "Ready to sync with Google Sheet." : "Will auto-sync when internet returns.");
+        btn.style.display = navigator.onLine ? "inline-block" : "none";
+      } else {
+        bar.style.display = "none";
+      }
+    }
+
+    function escapeHtml_(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function setSelectValueSafe_(selectId, val, fallback) {
+      const sel = document.getElementById(selectId);
+      const target = String(val || "").trim();
+      if (!target) {
+        sel.value = fallback || "";
+        return;
+      }
+      let exists = false;
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value.toLowerCase() === target.toLowerCase()) {
+          sel.value = sel.options[i].value;
+          exists = true;
+          break;
+        }
+      }
+      if (!exists) {
+        const opt = document.createElement("option");
+        opt.value = target;
+        opt.textContent = target;
+        sel.appendChild(opt);
+        sel.value = target;
+      }
+    }
+
+    function showAlert(msg, type) {
+      const box = document.getElementById("alertBox");
+      box.className = "alert " + (type === "error" ? "alert-error" : "alert-success");
+      box.textContent = msg;
+      box.style.display = "block";
+    }
+
+    function hideAlert() {
+      document.getElementById("alertBox").style.display = "none";
+    }
+
+    function applyRolePermissions(isAdmin) {
+      const roleBadge = document.getElementById("roleBadge");
+      const summaryTitle = document.getElementById("summarySectionTitle");
+      const summaryInputs = document.querySelectorAll(".summary-field");
+
+      roleBadge.style.display = "inline-block";
+
+      if (isAdmin) {
+        roleBadge.textContent = "Admin Mode (Full Edit)";
+        roleBadge.className = "role-badge role-admin";
+        summaryTitle.textContent = "Lead Summary (Admin Editable)";
+        summaryInputs.forEach(input => {
+          input.removeAttribute("readonly");
+          input.removeAttribute("tabindex");
+        });
+      } else {
+        roleBadge.textContent = "Agent Mode (Assigned Leads Only)";
+        roleBadge.className = "role-badge role-agent";
+        summaryTitle.textContent = "Lead Summary (Sheet Info - Read-Only)";
+        summaryInputs.forEach(input => {
+          input.setAttribute("readonly", "readonly");
+          input.setAttribute("tabindex", "-1");
+        });
+      }
+    }
+
+    function resetCallFields() {
+      document.getElementById("callOutcome").value = "";
+      document.getElementById("orderId").value = "";
+      document.getElementById("saleAmount").value = "";
+      document.getElementById("dncRequest").value = "No";
+    }
+
+    function showVerificationState(messageText) {
+      localStorage.removeItem(STORAGE_KEYS.IDENTITY);
+      localStorage.removeItem(STORAGE_KEYS.PROFILE);
+      localStorage.removeItem(STORAGE_KEYS.LEADS);
+      ACTIVE_CLIENT_IDENTITY = "";
+      LOGGED_IN_AGENT_ID = "";
+      LOGGED_IN_AGENT_NAME = "";
+      IS_LOGGED_IN_ADMIN = false;
+      ASSIGNED_LEADS_CACHE = [];
+      SELECTED_LEAD_ID = "";
+
+      document.getElementById("userAvatar").textContent = "?";
+      document.getElementById("userName").textContent = "Verification Required";
+      document.getElementById("userEmail").textContent = "Please enter your authorized email or Agent ID below";
+      document.getElementById("userAgentId").textContent = "--";
+      document.getElementById("logoutBtn").style.display = "none";
+      document.getElementById("roleBadge").style.display = "none";
+      document.getElementById("activeLeadBadge").style.display = "none";
+
+      document.getElementById("verifyBox").style.display = "block";
+      document.getElementById("searchSection").style.display = "none";
+      document.getElementById("assignedPanel").style.display = "none";
+      document.getElementById("formBody").style.display = "none";
+      document.getElementById("searchLeadId").value = "";
+      document.getElementById("panelFilterInput").value = "";
+      document.getElementById("verifyInput").value = "";
+      resetCallFields();
+
+      if (messageText) showAlert(messageText, "success");
+      setTimeout(() => document.getElementById("verifyInput").focus(), 100);
+    }
+
+    function logoutAgent() {
+      hideAlert();
+      const pending = getOfflineQueue_();
+      if (pending.length > 0) {
+        showAlert("আগে " + pending.length + " টি অফলাইন আপডেট Sync করুন, তারপর Logout করুন।", "error");
+        return;
+      }
+      showVerificationState("সফলভাবে লগআউট হয়েছে। এখন সঠিক Gmail বা Agent ID দিয়ে প্রবেশ করুন।");
+    }
+
+    function renderAssignedTable() {
+      const tbody = document.getElementById("assignedLeadsBody");
+      const filterText = String(document.getElementById("panelFilterInput").value || "").trim().toLowerCase();
+      const pendingQueue = getOfflineQueue_();
+      const pendingIds = new Set(pendingQueue.map(q => String(q.payload.leadId || "").toUpperCase()));
+
+      const filtered = ASSIGNED_LEADS_CACHE.filter(item => {
+        if (!filterText) return true;
+        return (
+          String(item.leadId || "").toLowerCase().indexOf(filterText) !== -1 ||
+          String(item.mobileNumber || "").toLowerCase().indexOf(filterText) !== -1 ||
+          String(item.customerName || "").toLowerCase().indexOf(filterText) !== -1 ||
+          String(item.area || "").toLowerCase().indexOf(filterText) !== -1 ||
+          String(item.leadStatus || "").toLowerCase().indexOf(filterText) !== -1 ||
+          String(item.followUpStatus || "").toLowerCase().indexOf(filterText) !== -1
+        );
+      });
+
+      document.getElementById("assignedCountBadge").textContent = filtered.length + " Leads";
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="21" class="empty-panel">আপনার নামে অ্যাসাইন করা কোনো লিড খুঁজে পাওয়া যায়নি।</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(item => {
+        const isSelected = SELECTED_LEAD_ID && SELECTED_LEAD_ID === item.leadId;
+        const safeId = escapeHtml_(item.leadId);
+        const isPending = pendingIds.has(String(item.leadId || "").toUpperCase());
+        return (
+          '<tr class="' + (isSelected ? "active-row" : "") + '" onclick="selectLeadFromPanel(\'' + safeId + '\')">' +
+            '<td><button type="button" class="btn-select" onclick="event.stopPropagation(); selectLeadFromPanel(\'' + safeId + '\')">Open</button></td>' +
+            '<td><strong>' + safeId + '</strong>' + (isPending ? '<span class="pending-tag">Offline</span>' : '') + '</td>' +
+            '<td>' + escapeHtml_(item.collectionDate) + '</td>' +
+            '<td>' + escapeHtml_(item.leadSource) + '</td>' +
+            '<td>' + escapeHtml_(item.sourceCampaign) + '</td>' +
+            '<td>' + (escapeHtml_(item.customerName) || "--") + '</td>' +
+            '<td>' + escapeHtml_(item.mobileNumber) + '</td>' +
+            '<td>' + escapeHtml_(item.area) + '</td>' +
+            '<td>' + (escapeHtml_(item.interest) || "--") + '</td>' +
+            '<td>' + escapeHtml_(item.assignedDate) + '</td>' +
+            '<td>' + escapeHtml_(item.assignedAgent) + '</td>' +
+            '<td>' + escapeHtml_(item.agentName) + '</td>' +
+            '<td>' + (escapeHtml_(item.priority) || "--") + '</td>' +
+            '<td><span class="status-tag">' + (escapeHtml_(item.leadStatus) || "New") + '</span></td>' +
+            '<td>' + (escapeHtml_(item.lastCallDate) || "--") + '</td>' +
+            '<td>' + (escapeHtml_(item.nextFollowUpDisplay || item.nextFollowUp) || "--") + '</td>' +
+            '<td>' + (escapeHtml_(item.followUpStatus) || "--") + '</td>' +
+            '<td>' + escapeHtml_(item.totalCallAttempts) + '</td>' +
+            '<td>' + (escapeHtml_(item.contactPermission) || "--") + '</td>' +
+            '<td>' + escapeHtml_(item.totalRevenue) + '</td>' +
+            '<td>' + (escapeHtml_(item.customerNotes) || "--") + '</td>' +
+          '</tr>'
+        );
+      }).join("");
+    }
+
+    async function loadAssignedLeads() {
+      const tbody = document.getElementById("assignedLeadsBody");
+      const panelTitle = document.getElementById("assignedPanelTitle");
+      panelTitle.textContent = IS_LOGGED_IN_ADMIN
+        ? "All Leads (Admin View)"
+        : ("My Assigned Leads (" + (LOGGED_IN_AGENT_NAME || LOGGED_IN_AGENT_ID) + ")");
+
+      if (!navigator.onLine) {
+        try {
+          ASSIGNED_LEADS_CACHE = JSON.parse(localStorage.getItem(STORAGE_KEYS.LEADS) || "[]");
+        } catch (e) {
+          ASSIGNED_LEADS_CACHE = [];
+        }
+        document.getElementById("lastSyncText").textContent = "Showing Offline Cached Leads";
+        renderAssignedTable();
+        return;
+      }
+
+      tbody.innerHTML = '<tr><td colspan="21" class="empty-panel">Syncing latest data from Google Sheet...</td></tr>';
+
+      try {
+        const list = await callApi_({
+          action: "getAssignedLeads",
+          identity: ACTIVE_CLIENT_IDENTITY
+        });
+        ASSIGNED_LEADS_CACHE = Array.isArray(list) ? list : [];
+        localStorage.setItem(STORAGE_KEYS.LEADS, JSON.stringify(ASSIGNED_LEADS_CACHE));
+        const nowStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        document.getElementById("lastSyncText").textContent = "Synced at " + nowStr;
+        renderAssignedTable();
+      } catch (err) {
+        try {
+          ASSIGNED_LEADS_CACHE = JSON.parse(localStorage.getItem(STORAGE_KEYS.LEADS) || "[]");
+        } catch (e) {
+          ASSIGNED_LEADS_CACHE = [];
+        }
+        renderAssignedTable();
+        showAlert(err.message || "লিড লোড করা যায়নি (Cached data দেখানো হচ্ছে)।", "error");
+      }
+    }
+
+    function refreshAllFromSheet() {
+      hideAlert();
+      if (!navigator.onLine) {
+        loadAssignedLeads();
+        showAlert("আপনি এখন Offline আছেন—লোকাল ক্যাশ থেকে ডেটা দেখানো হচ্ছে।", "error");
+        return;
+      }
+      loadAssignedLeads();
+      if (SELECTED_LEAD_ID && document.getElementById("formBody").style.display === "block") {
+        document.getElementById("searchLeadId").value = SELECTED_LEAD_ID;
+        searchLead();
+      }
+    }
+
+    function selectLeadFromPanel(leadId) {
+      if (!leadId) return;
+      document.getElementById("searchLeadId").value = leadId;
+      searchLead();
+    }
+
+    function applyProfileToUI_(profile, hint) {
+      document.getElementById("verifyBox").style.display = "none";
+      document.getElementById("searchSection").style.display = "block";
+      document.getElementById("assignedPanel").style.display = "block";
+
+      const resolvedIdentity = profile.email || profile.agentId || hint || "";
+      if (resolvedIdentity) {
+        ACTIVE_CLIENT_IDENTITY = resolvedIdentity;
+        localStorage.setItem(STORAGE_KEYS.IDENTITY, resolvedIdentity);
+      }
+      localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(profile));
+
+      const name = profile.agentName || "Agent";
+      LOGGED_IN_AGENT_ID = profile.agentId || "";
+      LOGGED_IN_AGENT_NAME = name;
+      IS_LOGGED_IN_ADMIN = Boolean(profile.isAdmin);
+
+      const initials = name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(part => part[0].toUpperCase())
+        .join("") || "AG";
+
+      document.getElementById("userAvatar").textContent = initials;
+      document.getElementById("userName").textContent = name;
+      document.getElementById("userEmail").textContent = profile.email || "";
+      document.getElementById("userAgentId").textContent = profile.agentId || "N/A";
+      document.getElementById("logoutBtn").style.display = "inline-block";
+
+      applyRolePermissions(IS_LOGGED_IN_ADMIN);
+      loadAssignedLeads();
+      if (navigator.onLine) {
+        syncOfflineQueue();
+      }
+    }
+
+    async function loadProfile(hint) {
+      if (!hint) {
+        showVerificationState("");
+        return;
+      }
+
+      if (!navigator.onLine) {
+        try {
+          const cachedProfile = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROFILE) || "null");
+          if (cachedProfile && !cachedProfile.needsVerification) {
+            applyProfileToUI_(cachedProfile, hint);
+            return;
+          }
+        } catch (e) {}
+        showVerificationState("");
+        showAlert("অফলাইন মোডে প্রথমবার লগইন করতে ইন্টারনেট সংযোগ প্রয়োজন।", "error");
+        return;
+      }
+
+      try {
+        const profile = await callApi_({
+          action: "getProfile",
+          identity: hint
+        });
+        if (!profile || profile.needsVerification) {
+          showVerificationState("");
+          return;
+        }
+        applyProfileToUI_(profile, hint);
+      } catch (err) {
+        showVerificationState("");
+        showAlert(err.message || "প্রোফাইল লোড করতে সমস্যা হয়েছে।", "error");
+      }
+    }
+
+    function verifyAgent() {
+      hideAlert();
+      const val = document.getElementById("verifyInput").value.trim();
+      if (!val) {
+        showAlert("আপনার অনুমোদিত ইমেইল অথবা Agent ID লিখুন।", "error");
+        return;
+      }
+      loadProfile(val);
+    }
+
+    function populateFormWithLead_(res) {
+      SELECTED_LEAD_ID = res.leadId;
+      renderAssignedTable();
+      applyRolePermissions(Boolean(res.isAdmin !== undefined ? res.isAdmin : IS_LOGGED_IN_ADMIN));
+
+      document.getElementById("rowNumber").value = res.rowNumber;
+      document.getElementById("leadId").value = res.leadId;
+
+      const badge = document.getElementById("activeLeadBadge");
+      badge.textContent = res.leadId + " (Row " + res.rowNumber + ")";
+      badge.style.display = "inline-block";
+
+      document.getElementById("collectionDate").value = res.collectionDate || "";
+      document.getElementById("mobileNumber").value = res.mobileNumber || "";
+      document.getElementById("leadSource").value = res.leadSource || "";
+      document.getElementById("sourceCampaign").value = res.sourceCampaign || "";
+      document.getElementById("area").value = res.area || "";
+      document.getElementById("assignedDate").value = res.assignedDate || "";
+      document.getElementById("assignedAgent").value = res.assignedAgent || "";
+      document.getElementById("agentName").value = res.agentName || "";
+      document.getElementById("lastCallDate").value = res.lastCallDate || "";
+      document.getElementById("followUpStatus").value = res.followUpStatus || "";
+      document.getElementById("totalCallAttempts").value = res.totalCallAttempts || "0";
+      document.getElementById("totalRevenue").value = res.totalRevenue || "0";
+
+      document.getElementById("customerName").value = res.customerName || "";
+      document.getElementById("interest").value = res.interest || "";
+      document.getElementById("nextFollowUp").value = res.nextFollowUp || "";
+      setSelectValueSafe_("priority", res.priority, "");
+      setSelectValueSafe_("leadStatus", res.leadStatus, "New");
+      setSelectValueSafe_("contactPermission", res.contactPermission, "");
+      document.getElementById("customerNotes").value = res.customerNotes || "";
+
+      resetCallFields();
+      document.getElementById("formBody").style.display = "block";
+    }
+
+    function searchInLocalCache_(query) {
+      const upper = query.toUpperCase();
+      const digits = query.replace(/\D/g, "");
+      const normPhone = digits.length >= 10 ? digits.slice(-10) : digits;
+
+      for (let i = 0; i < ASSIGNED_LEADS_CACHE.length; i++) {
+        const item = ASSIGNED_LEADS_CACHE[i];
+        const itemDigits = String(item.mobileNumber || "").replace(/\D/g, "");
+        const itemNorm = itemDigits.length >= 10 ? itemDigits.slice(-10) : itemDigits;
+
+        if (String(item.leadId || "").toUpperCase() === upper || (normPhone.length >= 10 && itemNorm === normPhone)) {
+          return item;
+        }
+      }
+      return null;
+    }
+
+    async function searchLead() {
+      hideAlert();
+      const query = document.getElementById("searchLeadId").value.trim();
+      if (!query) {
+        showAlert("Lead ID অথবা Mobile Number লিখুন।", "error");
+        return;
+      }
+
+      if (!navigator.onLine) {
+        const cachedLead = searchInLocalCache_(query);
+        if (!cachedLead) {
+          SELECTED_LEAD_ID = "";
+          renderAssignedTable();
+          document.getElementById("formBody").style.display = "none";
+          document.getElementById("activeLeadBadge").style.display = "none";
+          showAlert("Offline Mode: আপনার ক্যাশ করা অ্যাসাইন লিস্টে এই রেকর্ড পাওয়া যায়নি।", "error");
+          return;
+        }
+        populateFormWithLead_(cachedLead);
+        return;
+      }
+
+      const btn = document.getElementById("searchBtn");
+      btn.disabled = true;
+      btn.textContent = "...";
+
+      try {
+        const res = await callApi_({
+          action: "searchLead",
+          query: query,
+          identity: ACTIVE_CLIENT_IDENTITY
+        });
+        btn.disabled = false;
+        btn.textContent = "Search";
+
+        if (!res || !res.found) {
+          SELECTED_LEAD_ID = "";
+          renderAssignedTable();
+          document.getElementById("formBody").style.display = "none";
+          document.getElementById("activeLeadBadge").style.display = "none";
+          showAlert("আপনার অ্যাসাইন করা লিস্টে এই Lead ID বা Mobile Number খুঁজে পাওয়া যায়নি।", "error");
+          return;
+        }
+
+        populateFormWithLead_(res);
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = "Search";
+        SELECTED_LEAD_ID = "";
+        renderAssignedTable();
+        document.getElementById("formBody").style.display = "none";
+        document.getElementById("activeLeadBadge").style.display = "none";
+        showAlert(err.message || "সার্চ করতে সমস্যা হয়েছে।", "error");
+      }
+    }
+
+    function saveLocallyOffline_(payload) {
+      const queue = getOfflineQueue_();
+      queue.push({
+        id: Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+        identity: ACTIVE_CLIENT_IDENTITY,
+        payload: payload
+      });
+      setOfflineQueue_(queue);
+
+      for (let i = 0; i < ASSIGNED_LEADS_CACHE.length; i++) {
+        if (String(ASSIGNED_LEADS_CACHE[i].leadId) === String(payload.leadId)) {
+          ASSIGNED_LEADS_CACHE[i].customerName = payload.customerName;
+          ASSIGNED_LEADS_CACHE[i].interest = payload.interest;
+          ASSIGNED_LEADS_CACHE[i].nextFollowUp = payload.nextFollowUp;
+          ASSIGNED_LEADS_CACHE[i].nextFollowUpDisplay = payload.nextFollowUp;
+          ASSIGNED_LEADS_CACHE[i].priority = payload.priority;
+          ASSIGNED_LEADS_CACHE[i].leadStatus = payload.leadStatus;
+          ASSIGNED_LEADS_CACHE[i].contactPermission = payload.contactPermission;
+          ASSIGNED_LEADS_CACHE[i].customerNotes = payload.customerNotes;
+          break;
+        }
+      }
+      localStorage.setItem(STORAGE_KEYS.LEADS, JSON.stringify(ASSIGNED_LEADS_CACHE));
+      renderAssignedTable();
+    }
+
+    async function syncOfflineQueue() {
+      if (IS_SYNCING || !navigator.onLine) return;
+      const queue = getOfflineQueue_();
+      if (queue.length === 0) return;
+
+      IS_SYNCING = true;
+      const btn = document.getElementById("syncNowBtn");
+      btn.disabled = true;
+      btn.textContent = "Syncing...";
+
+      try {
+        while (getOfflineQueue_().length > 0 && navigator.onLine) {
+          const currentQueue = getOfflineQueue_();
+          const currentItem = currentQueue[0];
+          await callApi_({
+            action: "saveLead",
+            payload: currentItem.payload,
+            identity: currentItem.identity || ACTIVE_CLIENT_IDENTITY
+          });
+          currentQueue.shift();
+          setOfflineQueue_(currentQueue);
+        }
+        IS_SYNCING = false;
+        btn.disabled = false;
+        btn.textContent = "Sync Now";
+        showAlert("সব অফলাইন আপডেট সফলভাবে Google Sheet-এ Sync হয়েছে!", "success");
+        refreshAllFromSheet();
+      } catch (err) {
+        IS_SYNCING = false;
+        btn.disabled = false;
+        btn.textContent = "Sync Now";
+        showAlert("Sync করতে সমস্যা হয়েছে: " + (err.message || "Error"), "error");
+      }
+    }
+
+    async function saveLead() {
+      hideAlert();
+
+      const callOutcome = document.getElementById("callOutcome").value;
+      if (!callOutcome) {
+        showAlert("অনুগ্রহ করে 'Call Outcome' ড্রপডাউন থেকে একটি অপশন সিলেক্ট করুন।", "error");
+        document.getElementById("callOutcome").focus();
+        return;
+      }
+
+      const payload = {
+        rowNumber: document.getElementById("rowNumber").value,
+        leadId: document.getElementById("leadId").value,
+        collectionDate: document.getElementById("collectionDate").value,
+        mobileNumber: document.getElementById("mobileNumber").value,
+        leadSource: document.getElementById("leadSource").value,
+        sourceCampaign: document.getElementById("sourceCampaign").value,
+        area: document.getElementById("area").value,
+        assignedDate: document.getElementById("assignedDate").value,
+        assignedAgent: document.getElementById("assignedAgent").value,
+        agentName: document.getElementById("agentName").value,
+        customerName: document.getElementById("customerName").value,
+        interest: document.getElementById("interest").value,
+        nextFollowUp: document.getElementById("nextFollowUp").value,
+        priority: document.getElementById("priority").value,
+        leadStatus: document.getElementById("leadStatus").value,
+        contactPermission: document.getElementById("contactPermission").value,
+        customerNotes: document.getElementById("customerNotes").value,
+        callOutcome: callOutcome,
+        orderId: document.getElementById("orderId").value,
+        saleAmount: document.getElementById("saleAmount").value,
+        dncRequest: document.getElementById("dncRequest").value
+      };
+
+      if (!navigator.onLine) {
+        saveLocallyOffline_(payload);
+        resetCallFields();
+        showAlert("Offline Mode: " + payload.leadId + " লোকাল স্টোরেজে সেভ হয়েছে! নেট ফিরলেই Google Sheet-এ চলে যাবে।", "success");
+        return;
+      }
+
+      const btn = document.getElementById("saveBtn");
+      btn.disabled = true;
+      btn.textContent = "Saving...";
+
+      try {
+        const res = await callApi_({
+          action: "saveLead",
+          payload: payload,
+          identity: ACTIVE_CLIENT_IDENTITY
+        });
+        btn.disabled = false;
+        btn.textContent = "Save Changes & Log Call";
+        resetCallFields();
+        showAlert(res.message || "সফলভাবে সেভ হয়েছে!", "success");
+        refreshAllFromSheet();
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = "Save Changes & Log Call";
+        if (!navigator.onLine) {
+          saveLocallyOffline_(payload);
+          resetCallFields();
+          showAlert("নেট সংযোগ বিচ্ছিন্ন হওয়ায় " + payload.leadId + " অফলাইনে সেভ করা হয়েছে।", "success");
+        } else {
+          showAlert(err.message || "সেভ করতে সমস্যা হয়েছে।", "error");
+        }
+      }
+    }
+
+    window.addEventListener("online", function() {
+      updateNetworkUI_();
+      syncOfflineQueue();
+    });
+
+    window.addEventListener("offline", function() {
+      updateNetworkUI_();
+    });
+
+    window.addEventListener("DOMContentLoaded", function() {
+      updateNetworkUI_();
+      loadProfile(ACTIVE_CLIENT_IDENTITY);
+    });
+  </script>
+</body>
+</html>
